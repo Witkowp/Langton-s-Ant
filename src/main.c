@@ -52,7 +52,7 @@ static inline void step( mm *ants,int size) {
                 break;
             case '0':
                 world[ants[i].y][ants[i].x] = '1';
-                print_world[ants[i].y][ants[i].x]='0';
+                print_world[ants[i].y][ants[i].x]='1';
                 switch (ants[i].dir) {
                     case LEFT:
                         ants[i].y++;
