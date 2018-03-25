@@ -2,9 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-
-#define ROWS  50
-#define COLS  50
+#include "create_png_file.h"
+#define ROWS  100
+#define COLS  100
 #define MSECS 25000
 static int size;
 static int noAnts;
@@ -16,15 +16,18 @@ enum {
     LEFT, RIGHT, UP, DOWN
 };
 
-static char world[ROWS][COLS];
-static char print_world[ROWS][COLS];
+
+void mapInitializer(char** world,char** print_world);
+void createMap(char** map,int size);
+void printer(char** print_world);
+
 typedef struct movement {
     int x;
     int y;
     int dir;
 } mm;
 
-static inline void step(mm *ants, int noAnts) {
+static inline void step(char** world, char** print_world,mm *ants, int noAnts,int size) {
     int i = 0;
 
     for (i; i < noAnts; i++) {
@@ -73,23 +76,14 @@ static inline void step(mm *ants, int noAnts) {
                 }
 
         }
-    }
-    int y = 0;
-    int x;
-    for (y = 0; y < noAnts; y++) {
-        print_world[ants[y].y][ants[y].x] = '#';
+        ants[i].x=ants[i].x % (size-1);
+        ants[i].y=ants[i].y % (size-1);
     }
 
-    for (y = 0; y < size; y++) {
-        printf("\n");
-        for (x = 0; x < size; x++) {
-            printf("%c ", print_world[y][x]);
-        }
-    }
 
 }
 
-int main(void) {
+int main() {
     printf("Podaj wymiary planszy: ");
     scanf("%d", &size);
     if (size < 1) {
@@ -114,19 +108,15 @@ int main(void) {
          return 102;
      }
 
-
-    int rows;
-    int columns;
-    for (rows = 0; rows < size; rows++) {
-        for (columns = 0; columns < size; columns++) {
-            world[rows][columns] = '1';
-            print_world[rows][columns] = '1';
-        }
-    }
+    char** world=(char**)malloc(size*sizeof(char*));
+    char** print_world=(char**)malloc(size*sizeof(char*));
+    createMap(world,size);
+    createMap(print_world,size);
+    mapInitializer(world,print_world);
     mm *array_of_ants = (mm *) malloc(noAnts * sizeof(mm));
     int x = 0;
     for (x = 0; x < noAnts; x++) {
-        array_of_ants[x].x = 2 * x + (size - 2 * noAnts) / 2;
+        array_of_ants[x].x =  x + (size - 2 * noAnts) / 2;
         array_of_ants[x].y = x + (size - noAnts) / 2;
         array_of_ants[x].dir = RIGHT;
     }
@@ -141,12 +131,49 @@ int main(void) {
             fprintf(stderr, "usleep failed");
             exit(1);
         }
-        step(array_of_ants, noAnts);
+        step(world,print_world,array_of_ants, noAnts,size);
         printf("Step: %d\n", i + 1);
-    }
-    for (x = 0; x < noAnts; x++) {
-        free(array_of_ants);
+	
     }
 
+    int y = 0;
+    for (y = 0; y < noAnts; y++) {
+        print_world[array_of_ants[y].y][array_of_ants[y].x] = '#';
+    }
+    process_file(size,print_world);
+    write_png_file("out.png");
+    printer(print_world);
+
+    free(array_of_ants);
+
+
     puts("Done.");
+}
+
+void printer(char** print_world) {
+    int y = 0,x=0;
+    for (y = 0; y < size; y++) {
+        printf("\n");
+        for (x = 0; x < size; x++) {
+            printf("%c ", print_world[y][x]);
+        }
+    }
+}
+
+void mapInitializer(char** world,char** print_world) {
+    int rows;
+    int columns;
+    for (rows = 0; rows < size; rows++) {
+        for (columns = 0; columns < size; columns++) {
+            world[rows][columns] = '1';
+            print_world[rows][columns] = '1';
+        }
+    }
+}
+
+void createMap(char** map,int size){
+	int x;
+	for(x=0;x<size;x++){
+		map[x]=(char*)malloc(size*sizeof(char));
+	}
 }
