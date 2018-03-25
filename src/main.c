@@ -3,9 +3,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include "create_png_file.h"
-#define ROWS  100
-#define COLS  100
-#define MSECS 25000
 static int size;
 static int noAnts;
 
@@ -76,8 +73,8 @@ static inline void step(char** world, char** print_world,mm *ants, int noAnts,in
                 }
 
         }
-        ants[i].x=ants[i].x % (size-1);
-        ants[i].y=ants[i].y % (size-1);
+        ants[i].x=abs(ants[i].x % size);
+        ants[i].y=abs(ants[i].y % size);
     }
 
 
@@ -116,9 +113,9 @@ int main() {
     mm *array_of_ants = (mm *) malloc(noAnts * sizeof(mm));
     int x = 0;
     for (x = 0; x < noAnts; x++) {
-        array_of_ants[x].x =  x + (size - 2 * noAnts) / 2;
-        array_of_ants[x].y = x + (size - noAnts) / 2;
-        array_of_ants[x].dir = RIGHT;
+	array_of_ants[x].x=rand()%size;
+	array_of_ants[x].y=rand()%size;
+        array_of_ants[x].dir=rand()%4;
     }
     for (x = 0; x < noAnts; x++) {
         printf("\n%i %i %i\n", array_of_ants[x].x, array_of_ants[x].y, array_of_ants[x].dir);
@@ -127,10 +124,6 @@ int main() {
     size_t i = 0;
 
     for (i; i < steps; i++) {
-        if (usleep(MSECS) == -1) {
-            fprintf(stderr, "usleep failed");
-            exit(1);
-        }
         step(world,print_world,array_of_ants, noAnts,size);
         printf("Step: %d\n", i + 1);
 	
@@ -145,7 +138,12 @@ int main() {
     printer(print_world);
 
     free(array_of_ants);
-
+    for(y=0;y<size;y++){
+	free(print_world[y]);
+	free(world[y]);	
+    }
+    free(world);
+    free(print_world);
 
     puts("Done.");
 }
