@@ -3,82 +3,16 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include "create_png_file.h"
+#include "step.h"
+
 static int size;
 static int noAnts;
-
-enum {
-    WHITE, BLACK
-};
-enum {
-    LEFT, RIGHT, UP, DOWN
-};
-
 
 void mapInitializer(char** world,char** print_world);
 void createMap(char** map,int size);
 void printer(char** print_world);
 
-typedef struct movement {
-    int x;
-    int y;
-    int dir;
-} mm;
 
-static inline void step(char** world, char** print_world,mm *ants, int noAnts,int size) {
-    int i = 0;
-
-    for (i; i < noAnts; i++) {
-        switch (world[ants[i].y][ants[i].x]) {
-            case '1':
-                world[ants[i].y][ants[i].x] = '0';
-                print_world[ants[i].y][ants[i].x] = '0';
-                switch (ants[i].dir) {
-                    case LEFT:
-                        ants[i].y--;
-                        ants[i].dir = UP;
-                        break;
-                    case RIGHT:
-                        ants[i].y++;
-                        ants[i].dir = DOWN;
-                        break;
-                    case UP:
-                        ants[i].x++;
-                        ants[i].dir = RIGHT;
-                        break;
-                    case DOWN:
-                        ants[i].x--;
-                        ants[i].dir = LEFT;
-                        break;
-                }
-                break;
-            case '0':
-                world[ants[i].y][ants[i].x] = '1';
-                print_world[ants[i].y][ants[i].x] = '1';
-                switch (ants[i].dir) {
-                    case LEFT:
-                        ants[i].y++;
-                        ants[i].dir = DOWN;
-                        break;
-                    case RIGHT:
-                        ants[i].y--;
-                        ants[i].dir = UP;
-                        break;
-                    case UP:
-                        ants[i].x--;
-                        ants[i].dir = LEFT;
-                        break;
-                    case DOWN:
-                        ants[i].x++;
-                        ants[i].dir = RIGHT;
-                }
-
-        }
-        ants[i].x=abs(ants[i].x % size);
-        ants[i].y=abs(ants[i].y % size);
-    }
-
-
-}
 
 int main() {
     printf("Podaj wymiary planszy: ");
@@ -134,8 +68,8 @@ int main() {
         print_world[array_of_ants[y].y][array_of_ants[y].x] = '#';
     }
     process_file(size,print_world);
-    write_png_file("out.png");
-    printer(print_world);
+    write_png_file("Mrowki.png");
+
 
     free(array_of_ants);
     for(y=0;y<size;y++){
@@ -145,7 +79,7 @@ int main() {
     free(world);
     free(print_world);
 
-    puts("Done.");
+    puts("Program wygenerował plik png");
 }
 
 void printer(char** print_world) {
