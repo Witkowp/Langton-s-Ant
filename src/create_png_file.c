@@ -63,7 +63,6 @@ void write_png_file(char* file_name) {
 void process_file(int size,char** printworld) {
     width = size;
     height = size;
-    printf("%d",size);
     bit_depth = 8;
     color_type = PNG_COLOR_TYPE_GRAY;
     number_of_passes = 7;
@@ -74,7 +73,6 @@ void process_file(int size,char** printworld) {
     for (y=0; y<height; y++) {
         png_byte* row = row_pointers[y];
         for (x=0; x<width; x++) {
-	//	row[x]=(x+y)%2?255:0;
             if(printworld[x][y]=='1') {
               row[x] = 255;
             }
@@ -84,8 +82,6 @@ void process_file(int size,char** printworld) {
 	    else if(printworld[x][y]=='#'){
                 row[x]=126;
             }
-            printf("Pixel at position [ %d - %d ] has RGBA values: %d\n",
-                   x, y, row[x]);
         }
     }
 }

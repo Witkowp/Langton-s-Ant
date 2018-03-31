@@ -59,9 +59,14 @@ void step(char** world, char** print_world,mm *ants, int noAnts,int size) {
                 }
 
         }
-        ants[i].x=abs(ants[i].x %( size-1));
-        ants[i].y=abs(ants[i].y %( size-1));
+        ants[i].x=abs(mod(ants[i].x, size));
+        ants[i].y=abs(mod(ants[i].y, size));
     }
-
-
+}
+int mod (int a, int b)
+{
+   int ret = a % b;
+   if(ret < 0)
+     ret+=b;
+   return ret;
 }

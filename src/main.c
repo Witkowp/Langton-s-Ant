@@ -19,7 +19,7 @@ int main() {
     scanf("%d", &size);
     if (size < 1) {
         printf("Zbyt mala plansza!\n");
-        return 100;
+        return EXIT_FAILURE;
     }
     printf("\n");
 
@@ -28,22 +28,25 @@ int main() {
     scanf("%d", &steps);
     if (steps < 1) {
         printf("Liczba krokow musi być dodatnia!\n");
-        return 101;
+        return EXIT_FAILURE;
     }
     printf("\n");
 
     printf("Liczba mrowek: ");
     scanf("%d", &noAnts);
     if (noAnts < 1) {
-         printf("Liczba mrowek musi być dodatnia!\n");
-         return 102;
-     }
+        printf("Liczba mrowek musi być dodatnia!\n");
+    	return EXIT_FAILURE;  
+    }
 
     char** world=(char**)malloc(size*sizeof(char*));
     char** print_world=(char**)malloc(size*sizeof(char*));
+   
     createMap(world,size);
     createMap(print_world,size);
+   
     mapInitializer(world,print_world);
+   
     mm *array_of_ants = (mm *) malloc(noAnts * sizeof(mm));
     int x = 0;
     for (x = 0; x < noAnts; x++) {
@@ -51,16 +54,11 @@ int main() {
 	array_of_ants[x].y=rand()%size;
         array_of_ants[x].dir=rand()%4;
     }
-    for (x = 0; x < noAnts; x++) {
-        printf("\n%i %i %i\n", array_of_ants[x].x, array_of_ants[x].y, array_of_ants[x].dir);
-    }
     fflush(stdout);
     size_t i = 0;
 
     for (i; i < steps; i++) {
         step(world,print_world,array_of_ants, noAnts,size);
-        printf("Step: %d\n", i + 1);
-	
     }
 
     int y = 0;
@@ -79,7 +77,7 @@ int main() {
     free(world);
     free(print_world);
 
-    puts("Program wygenerował plik png");
+    puts("Program wygenerował plik png o nazwie Mrowki.png");
 }
 
 void printer(char** print_world) {
