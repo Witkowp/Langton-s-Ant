@@ -15,6 +15,7 @@ void printer(char** print_world);
 
 
 int main() {
+    time_t t;
     printf("Podaj wymiary planszy: ");
     scanf("%d", &size);
     if (size < 1) {
@@ -46,7 +47,7 @@ int main() {
     createMap(print_world,size);
    
     mapInitializer(world,print_world);
-   
+    srand((unsigned) time(&t));	 
     mm *array_of_ants = (mm *) malloc(noAnts * sizeof(mm));
     int x = 0;
     for (x = 0; x < noAnts; x++) {
