@@ -1,0 +1,4 @@
+Kompilacja programu:
+
+gcc -o langtons_ant main.c create_png_file.h create_png_file.c step.c step.h -lpng
+
